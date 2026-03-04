@@ -26,7 +26,6 @@ class BasePage:
             return False
         return True
 
-    # ✅ отрицательная проверка: элемент НЕ появился за timeout
     def is_not_element_present(self, how, what, timeout=4):
         try:
             WebDriverWait(self.browser, timeout).until(
@@ -36,7 +35,6 @@ class BasePage:
             return True
         return False
 
-    # ✅ отрицательная проверка: элемент исчез за timeout
     def is_disappeared(self, how, what, timeout=4):
         try:
             WebDriverWait(self.browser, timeout, 1, TimeoutException).until_not(
@@ -46,11 +44,14 @@ class BasePage:
             return False
         return True
 
-    # ✅ переход в корзину из шапки
     def go_to_basket_page(self):
         self.browser.find_element(*BasePageLocators.BASKET_LINK).click()
 
-    # (если у тебя уже был этот метод — оставь)
+    def should_be_authorized_user(self):
+        assert self.is_element_present(
+            *BasePageLocators.USER_ICON
+        ), "User icon is not presented, probably unauthorised user"
+
     def solve_quiz_and_get_code(self):
         alert = self.browser.switch_to.alert
         x = alert.text.split(" ")[2]

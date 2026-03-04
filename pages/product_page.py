@@ -6,14 +6,12 @@ class ProductPage(BasePage):
     def add_product_to_basket(self):
         self.browser.find_element(*ProductPageLocators.ADD_TO_BASKET_BUTTON).click()
 
-    # --- данные со страницы товара (берём ДО клика, чтобы не было stale) ---
     def get_product_name(self):
         return self.browser.find_element(*ProductPageLocators.PRODUCT_NAME).text
 
     def get_product_price(self):
         return self.browser.find_element(*ProductPageLocators.PRODUCT_PRICE).text
 
-    # --- данные из сообщений после добавления ---
     def get_success_message_product_name(self):
         return self.browser.find_element(
             *ProductPageLocators.SUCCESS_MESSAGE_PRODUCT_NAME
@@ -24,7 +22,6 @@ class ProductPage(BasePage):
             *ProductPageLocators.BASKET_TOTAL_MESSAGE_PRICE
         ).text
 
-    # --- проверки ---
     def should_be_correct_product_name_in_message(self, expected_name):
         actual_name = self.get_success_message_product_name()
         assert (
@@ -37,7 +34,6 @@ class ProductPage(BasePage):
             actual_price == expected_price
         ), f"Wrong basket total: expected {expected_price!r}, got {actual_price!r}"
 
-    # --- один метод для теста: добавить, решить квиз, проверить ---
     def add_to_basket_and_solve_quiz(self):
         name = self.get_product_name()
         price = self.get_product_price()
@@ -47,3 +43,8 @@ class ProductPage(BasePage):
 
         self.should_be_correct_product_name_in_message(name)
         self.should_be_correct_price_in_basket_message(price)
+
+    def should_not_be_success_message(self):
+        assert self.is_not_element_present(
+            *ProductPageLocators.SUCCESS_MESSAGE_PRODUCT_NAME
+        ), "Success message is presented, but should not be"
