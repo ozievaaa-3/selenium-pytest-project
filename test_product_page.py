@@ -1,25 +1,13 @@
-import pytest
 from pages.product_page import ProductPage
-
-links = [
-    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer0",
-    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer1",
-    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer2",
-    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer3",
-    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer4",
-    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer5",
-    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer6",
-    pytest.param(
-        "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer7",
-        marks=pytest.mark.xfail(reason="Known bug in promo offer7"),
-    ),
-    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer8",
-    "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer9",
-]
+from pages.basket_page import BasketPage
 
 
-@pytest.mark.parametrize("link", links)
-def test_guest_can_add_product_to_basket(browser, link):
+def test_guest_cant_see_product_in_basket_opened_from_product_page(browser):
+    link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
     page = ProductPage(browser, link)
     page.open()
-    page.add_to_basket_and_solve_quiz()
+    page.go_to_basket_page()
+
+    basket_page = BasketPage(browser, browser.current_url)
+    basket_page.should_be_empty_basket()
+    basket_page.should_be_text_about_empty_basket()
